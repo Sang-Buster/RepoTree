@@ -1,6 +1,6 @@
 <div align="center">
    <a href="https://github.com/Sang-Buster/RepoTree">
-      <img src="https://github.com/user-attachments/assets/a086788b-6d35-4c4f-ae1a-1053061b37cc" width=20% alt="logo">      
+      <img src="https://github.com/user-attachments/assets/aafd1c1c-15d7-4611-b64e-86863fae3e97" width=20% alt="logo">     
    </a>   
    <h1>RepoTree</h1>
    <h5>A VS Code extension that generates a visual tree representation of directories and files.</h5>
@@ -10,7 +10,7 @@
 
 <div align="center">
    <h2>✨ Features</h2>
-   <video src="https://github.com/user-attachments/assets/8e67b112-c8a9-4fbc-b733-a988e113d3eb" alt="demo" controls></video>
+   <video src="https://github.com/user-attachments/assets/619ed9c9-5a87-4792-bb7f-6aace213a7fa" alt="demo" controls></video>
 </div>
 
 - Generate directory tree visualization with a single click
@@ -55,7 +55,7 @@
 RepoTree supports excluding files and folders from the generated tree:
 
 <div align="center">
-   <img src="https://github.com/user-attachments/assets/f004624d-05e9-4a74-82a2-bb5b9a33a8b7" alt="screenshot">
+   <img src="https://github.com/user-attachments/assets/c457fce4-e30f-4e79-a449-0aace3cd9879" alt="screenshot">   
 </div>
 
 1. **Using VSCode's built-in `files.exclude` settings:**
