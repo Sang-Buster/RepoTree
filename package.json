@@ -1,0 +1,112 @@
+{
+	"name": "RepoTree",
+	"displayName": "Repo Tree",
+	"description": "Generate a tree from the current directory and files",
+	"publisher": "Sang-Buster",
+	"version": "0.0.1",
+	"engines": {
+		"vscode": "^1.60.0"
+	},
+	"icon": "img/icon.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Sang-Buster/RepoTree"
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"test": "node --no-warnings ./out/test/runTest.js",
+		"lint": "tslint -p tsconfig.json",
+		"format": "prettier --write \"src/**/*.ts\""
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:extension.generateTree"
+	],
+	"main": "./out/extension",
+	"contributes": {
+		"commands": [
+			{
+				"command": "extension.generateTree",
+				"title": "Generate to Tree"
+			}
+		],
+		"menus": {
+			"explorer/context": [
+				{
+					"when": "explorerResourceIsFolder",
+					"command": "extension.generateTree",
+					"group": "cmdGroup@1"
+				}
+			]
+		},
+		"configuration": {
+			"title": "RepoTree",
+			"properties": {
+				"RepoTree.exclude": {
+					"type": "object",
+					"description": "Configure glob patterns for excluding files and folders from the generated file tree. Each entry is a glob pattern with a boolean value indicating whether to exclude.",
+					"additionalProperties": {
+						"type": "boolean"
+					},
+					"default": {
+						"**/.git": true,
+						"**/__pycache__": true,
+						"**/node_modules": true,
+						"**/dist": true,
+						"**/build": true,
+						"**/out": true,
+						"**/.vscode": true,
+						"**/.idea": true,
+						"**/.DS_Store": true,
+						"**/Thumbs.db": true,
+						"**/coverage": true,
+						"**/logs": true,
+						"**/*.log": true,
+						"**/.env": true,
+						"**/.venv": true,
+						"**/bower_components": true,
+						"**/jspm_packages": true,
+						"**/.cache": true,
+						"**/target": true,
+						"**/bin": true,
+						"**/obj": true
+					},
+					"scope": "resource"
+				},
+				"RepoTree.respectWorkspaceExcludeSettings": {
+					"type": "boolean",
+					"default": false,
+					"description": "When enabled, files and folders excluded by VS Code's built-in files.exclude setting will also be excluded from the generated tree."
+				}
+			}
+		}
+	},
+	"devDependencies": {
+		"@types/mocha": "^9.1.0",
+		"@types/node": "^16.11.7",
+		"@types/vscode": "^1.60.0",
+		"@vscode/test-electron": "^2.1.3",
+		"mocha": "^9.2.0",
+		"prettier": "^3.5.3",
+		"tslint": "^5.20.1",
+		"typescript": "^4.9.5"
+	},
+	"__metadata": {
+		"id": "43d92103-c3bd-4f6f-9ac0-b36f4c583346",
+		"publisherId": "59c31d82-a4bd-4079-951b-014962453064",
+		"publisherDisplayName": "Sang-Buster",
+		"targetPlatform": "undefined",
+		"updated": false,
+		"isPreReleaseVersion": false,
+		"hasPreReleaseVersion": false,
+		"installedTimestamp": 1708666464126,
+		"size": 2250421
+	},
+	"dependencies": {
+		"glob": "^11.0.1"
+	}
+}
