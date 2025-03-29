@@ -27,15 +27,15 @@
 
 1. Open VS Code
 2. Go to Extensions (Ctrl+Shift+X or Cmd+Shift+X on macOS)
-3. Search for "Repo Tree" by "Sang-Buster"
+3. Search for `Sang-Buster.RepoTree`
 4. Click "Install" or Visit the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=Sang-Buster.RepoTree)
 
 ### From VSIX file
 
 1. Download the `.vsix` file from the [releases](https://github.com/Sang-Buster/RepoTree/releases) page
 2. Open VS Code
-3. Go to Extensions (Ctrl+Shift+X or Cmd+Shift+X on macOS)
-4. Click on the "..." menu (top-right) and select "Install from VSIX..."
+3. Go to Command Palette (Ctrl+Shift+P or Cmd+Shift+P on macOS)
+4. Search for `Extensions: Install from VSIX...`
 5. Select the downloaded `.vsix` file
 
 <div align="center">
