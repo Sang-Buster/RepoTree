@@ -75,7 +75,7 @@
 RepoTree supports excluding files and folders from the generated tree:
 
 <div align="center">
-   <img src="https://github.com/user-attachments/assets/c457fce4-e30f-4e79-a449-0aace3cd9879" alt="screenshot">   
+   <img src="https://github.com/user-attachments/assets/8220c829-82a1-4e0c-8c7b-3db0dabedeb7" alt="screenshot">      
 </div>
 
 1. **Using VSCode's built-in `files.exclude` settings:**
@@ -85,7 +85,12 @@ RepoTree supports excluding files and folders from the generated tree:
    - You can toggle this behavior in Settings by searching for `RepoTree: Respect Workspace Exclude Settings`
    - Uncheck the box to ignore VSCode's built-in exclusion settings
 
-2. **Custom exclusion patterns:**
+2. **Using `.gitignore` files:**
+   - The extension can also respect `.gitignore` files
+   - You can toggle this behavior in Settings by searching for `RepoTree: Respect .gitignore`
+   - Uncheck the box to ignore `.gitignore` files
+
+3. **Custom exclusion patterns:**
    - The extension comes with a comprehensive set of default excludes for common files and folders
    - You can customize these patterns by going to Settings and searching for `RepoTree: Exclude`
    - Add, delete, or edit patterns by toggling them on/off:
