@@ -9,32 +9,56 @@ export function convertGlobToRegExp(pattern: string): RegExp {
 	// Escape special characters except * and ?
 	let regexPattern = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&');
 
-	// Convert ** to match any character including path separators
+	// Handle common glob patterns first
+	if (pattern.includes('/**')) {
+		// Patterns with directory globstar like **/.vscode-test/** or src/**
+		const parts = pattern.split('/**');
+		const prefix = parts[0];
+
+		if (prefix === '**') {
+			// Pattern like **/** matches everything
+			return new RegExp('.*');
+		} else if (prefix.startsWith('**/')) {
+			// Pattern like **/.vscode-test/** matches directory at any level and all contents
+			const dirName = prefix.substring(3);
+			return new RegExp(`(^|.*/)(${escapeRegExp(dirName)})(/.*|$)`);
+		} else {
+			// Pattern like src/** matches contents within a specific directory
+			return new RegExp(`^${escapeRegExp(prefix)}(/.*|$)`);
+		}
+	} else if (pattern.startsWith('**/')) {
+		// Pattern like **/.vscode-test matches directory at any level
+		const patternName = pattern.substring(3);
+		return new RegExp(`(^|.*/)(${escapeRegExp(patternName)})(/.*|$)`);
+	} else if (pattern.endsWith('/')) {
+		// Pattern like .vscode-test/ matches directory at root level
+		const dirName = pattern.slice(0, -1);
+		return new RegExp(`^${escapeRegExp(dirName)}(/.*|$)`);
+	}
+
+	// For other patterns, process ** and * separately
 	regexPattern = regexPattern.replace(/\*\*/g, '__GLOBSTAR__');
-
-	// Convert * to match any character except path separators
 	regexPattern = regexPattern.replace(/\*/g, '[^/]*');
-
-	// Convert ? to match any single character except path separators
 	regexPattern = regexPattern.replace(/\?/g, '[^/]');
-
-	// Replace the globstar placeholder
 	regexPattern = regexPattern.replace(/__GLOBSTAR__/g, '.*');
 
-	// Match the pattern more precisely
-	if (pattern.startsWith('**/')) {
-		// Pattern like "**/node_modules" should match "node_modules" anywhere in the path
-		// Add word boundary or end of string after the pattern to prevent partial matching
-		// For example, **/out should match /out/ and /out but not /utils/ or /about/
-		const patternName = pattern.substring(3);
-		regexPattern = `(^|.*/)${patternName}(/.*|$)`;
-	} else if (pattern.startsWith('/')) {
+	// Default case - match exactly where specified
+	if (pattern.startsWith('/')) {
 		// Absolute path pattern
 		regexPattern = '^' + regexPattern;
 	} else {
-		// Other patterns should match exactly where specified
+		// Relative path pattern
 		regexPattern = '(^|.*/)' + regexPattern + '(/.*|$)';
 	}
 
 	return new RegExp(regexPattern);
+}
+
+/**
+ * Escape regexp special characters in a string
+ * @param string String to escape
+ * @returns Escaped string safe for RegExp
+ */
+function escapeRegExp(string: string): string {
+	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

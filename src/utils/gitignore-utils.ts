@@ -27,7 +27,6 @@ export function loadGitignorePatterns(dirPath: string): RegExp[] {
 	const gitignorePath = path.join(dirPath, '.gitignore');
 
 	if (!fs.existsSync(gitignorePath)) {
-		console.log('No .gitignore file found at:', gitignorePath);
 		return gitignorePatterns;
 	}
 
@@ -55,6 +54,16 @@ export function loadGitignorePatterns(dirPath: string): RegExp[] {
 
 				// Handle directory-specific patterns ending with /
 				if (pattern.endsWith('/')) {
+					// For directories, we need to match:
+					// 1. The directory itself (with or without trailing slash)
+					// 2. All contents inside that directory
+					const dirName = pattern.slice(0, -1); // Remove trailing slash
+
+					// Match the directory itself
+					const dirRegex = new RegExp(`^${escapeRegExp(dirName)}/?$`);
+					gitignorePatterns.push(dirRegex);
+
+					// Match all contents within the directory
 					normalizedPattern = pattern + '**';
 				}
 
@@ -73,6 +82,15 @@ export function loadGitignorePatterns(dirPath: string): RegExp[] {
 				}
 
 				try {
+					// Special handling for **/ patterns that didn't convert correctly
+					if (pattern.startsWith('**/')) {
+						// Match the pattern at any level in the directory structure
+						const patternWithoutGlob = pattern.substring(3);
+						const flexibleRegex = new RegExp(`(^|/)${escapeRegExp(patternWithoutGlob)}(/|$)`);
+						gitignorePatterns.push(flexibleRegex);
+					}
+
+					// Still convert and add the standard regex pattern
 					return convertGlobToRegExp(normalizedPattern);
 				} catch (err) {
 					console.error(`Error converting pattern: ${pattern}`, err);
@@ -83,7 +101,6 @@ export function loadGitignorePatterns(dirPath: string): RegExp[] {
 			.filter((pattern) => pattern !== null) as RegExp[];
 
 		gitignoreLoaded = true;
-		console.log(`Loaded ${gitignorePatterns.length} patterns from .gitignore`);
 	} catch (error) {
 		console.error('Error reading .gitignore:', error);
 	}
@@ -113,20 +130,98 @@ export function isExcludedByGitignore(filePath: string, rootDir: string): boolea
 	// Get the path relative to the root directory
 	const relativePath = path.relative(rootDir, filePath).replace(/\\/g, '/');
 
+	// Direct string matching for .gitignore patterns before regex matching
+	const gitignorePath = path.join(rootDir, '.gitignore');
+	if (fs.existsSync(gitignorePath)) {
+		const content = fs.readFileSync(gitignorePath, 'utf8');
+		const lines = content
+			.split('\n')
+			.map((line) => line.trim())
+			.filter((line) => line && !line.startsWith('#'));
+
+		// Check direct pattern matches before regex
+		for (const line of lines) {
+			// Skip negated patterns
+			if (line.startsWith('!')) {
+				continue;
+			}
+
+			// Handle directory patterns ending with /
+			if (line.endsWith('/')) {
+				const dirPattern = line.slice(0, -1); // Remove trailing slash
+
+				// Root level directory match
+				if (
+					relativePath === dirPattern ||
+					relativePath.startsWith(dirPattern + '/') ||
+					relativePath.startsWith(dirPattern + '\\')
+				) {
+					return true;
+				}
+			}
+			// Handle patterns with trailing /**
+			else if (line.endsWith('/**')) {
+				const dirPath = line.slice(0, -3); // Remove trailing /**
+
+				if (dirPath.startsWith('**/')) {
+					// Pattern like **/.vscode-test/**
+					const dirName = dirPath.substring(3);
+
+					// Check if the directory appears in the path
+					if (
+						relativePath === dirName ||
+						relativePath.startsWith(dirName + '/') ||
+						relativePath.includes('/' + dirName + '/')
+					) {
+						return true;
+					}
+				} else {
+					// Pattern like src/** - only match specific directory
+					if (relativePath === dirPath || relativePath.startsWith(dirPath + '/')) {
+						return true;
+					}
+				}
+			}
+			// Handle patterns starting with **/
+			else if (line.startsWith('**/')) {
+				const patternWithoutGlob = line.substring(3); // Remove **/ prefix
+
+				// Check all possible path variations for directory matching at any level
+				if (
+					relativePath === patternWithoutGlob ||
+					relativePath.endsWith('/' + patternWithoutGlob) ||
+					relativePath.includes('/' + patternWithoutGlob + '/') ||
+					// For Windows paths
+					relativePath.endsWith('\\' + patternWithoutGlob) ||
+					relativePath.includes('\\' + patternWithoutGlob + '\\')
+				) {
+					return true;
+				}
+			}
+			// Handle exact file matches
+			else if (relativePath === line) {
+				return true;
+			}
+		}
+	}
+
+	// Add trailing slash for directories to ensure proper directory matching
+	const isDirectory = fs.existsSync(filePath) && fs.statSync(filePath).isDirectory();
+	const relativePathWithTrailingSlash =
+		isDirectory && !relativePath.endsWith('/') ? relativePath + '/' : relativePath;
+
 	// Also check against the basename for simple filename patterns
 	const basename = path.basename(filePath);
 
 	// Check each pattern
 	for (const pattern of patterns) {
 		// Test against the full relative path
-		if (pattern.test(relativePath)) {
-			console.log(`Excluded by .gitignore pattern: ${filePath} (pattern matched: ${relativePath})`);
+		if (pattern.test(relativePath) || pattern.test(relativePathWithTrailingSlash)) {
 			return true;
 		}
 
 		// For simple filename patterns, also check just the basename
 		if (pattern.test(basename)) {
-			console.log(`Excluded by .gitignore basename match: ${filePath} (basename: ${basename})`);
 			return true;
 		}
 	}
