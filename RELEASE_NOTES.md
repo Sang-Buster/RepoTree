@@ -14,7 +14,8 @@
 
 ### Fixed
 
-- Refine glob pattern matching in convertGlobToRegExp function to prevent partial matches. Enhance handling of patterns starting with '**/' and improve regex construction for other patterns.
+- Enhance .gitignore pattern handling in `loadGitignorePatterns` and `isExcludedByGitignore` functions. 
+- Improve regex conversion in `convertGlobToRegExp` for better directory matching and support for patterns with trailing slashes and globstars.
 
 ---
 
