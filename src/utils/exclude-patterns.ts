@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as os from 'os';
 import { convertGlobToRegExp } from './glob-utils';
+import { isExcludedByGitignore } from './gitignore-utils';
 
 // Tracking global flag for logged patterns
 let hasLoggedPatterns = false;
@@ -27,6 +28,9 @@ export function shouldExclude(filePath: string, rootPath: string): boolean {
 	// Check if we should respect workspace exclusion settings
 	const respectWorkspaceExcludes = config.get('RepoTree.respectWorkspaceExcludeSettings', true);
 
+	// Check if we should respect .gitignore settings
+	const respectGitignore = config.get('RepoTree.respectGitignore', false);
+
 	// Convert object patterns to array for consistent processing
 	const allPatterns: string[] = [];
 
@@ -45,6 +49,11 @@ export function shouldExclude(filePath: string, rootPath: string): boolean {
 				allPatterns.push(pattern);
 			}
 		}
+	}
+
+	// Check .gitignore if enabled
+	if (respectGitignore && isExcludedByGitignore(filePath, rootPath)) {
+		return true;
 	}
 
 	// Log available patterns for debugging (only once)
