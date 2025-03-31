@@ -24,13 +24,16 @@ export function convertGlobToRegExp(pattern: string): RegExp {
 	// Match the pattern more precisely
 	if (pattern.startsWith('**/')) {
 		// Pattern like "**/node_modules" should match "node_modules" anywhere in the path
-		regexPattern = '(^|.*/)' + regexPattern.substring(4);
+		// Add word boundary or end of string after the pattern to prevent partial matching
+		// For example, **/out should match /out/ and /out but not /utils/ or /about/
+		const patternName = pattern.substring(3);
+		regexPattern = `(^|.*/)${patternName}(/.*|$)`;
 	} else if (pattern.startsWith('/')) {
 		// Absolute path pattern
 		regexPattern = '^' + regexPattern;
 	} else {
 		// Other patterns should match exactly where specified
-		regexPattern = '(^|.*/)' + regexPattern;
+		regexPattern = '(^|.*/)' + regexPattern + '(/.*|$)';
 	}
 
 	return new RegExp(regexPattern);
