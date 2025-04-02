@@ -104,6 +104,12 @@
 					"default": 4,
 					"minimum": 4,
 					"description": "The minimum distance between the file/folder name and the comment."
+				},
+				"RepoTree.treeDistance": {
+					"type": "number",
+					"default": 1,
+					"minimum": 1,
+					"description": "Controls the spacing between tree branches. Higher values make the tree look more spread out, lower values make it more consolidated."
 				}
 			}
 		}

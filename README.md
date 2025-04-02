@@ -28,14 +28,15 @@
 
 ### Extension Settings
 
-| Setting Name                               | Display Name                                 | Default Value | Description                                                                                                                        |
-|--------------------------------------------|----------------------------------------------|---------------|------------------------------------------------------------------------------------------------------------------------------------|
-| `RepoTree.exclude`                         | RepoTree: Exclude                            | See below\*   | Configure glob patterns for excluding files and folders from the generated file tree                                               |
-| `RepoTree.respectWorkspaceExcludeSettings` | RepoTree: Respect Workspace Exclude Settings | `false`       | When enabled, files and folders excluded by VS Code's built-in files.exclude setting will also be excluded from the generated tree |
-| `RepoTree.respectGitignore`                | RepoTree: Respect .gitignore                 | `false`       | When enabled, files and folders listed in the .gitignore file will be excluded from the generated tree                             |
-| `RepoTree.addComments`                     | RepoTree: Add Comments                       | `false`       | When enabled, comments will be added to the right of each file/folder in the generated tree                                        |
-| `RepoTree.commentSymbol`                   | RepoTree: Comment Symbol                     | `//`          | Symbol to use for comments in the generated tree                                                                                   |
-| `RepoTree.commentDistance`                 | RepoTree: Comment Distance                   | `4`           | The minimum distance between the file/folder name and the comment                                                                  |
+| Setting Name                               | Display Name                                 | Default Value | Description                                                                                                                          |
+| ------------------------------------------ | -------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `RepoTree.exclude`                         | RepoTree: Exclude                            | See below\*   | Configure glob patterns for excluding files and folders from the generated file tree                                                 |
+| `RepoTree.respectWorkspaceExcludeSettings` | RepoTree: Respect Workspace Exclude Settings | `false`       | When enabled, files and folders excluded by VS Code's built-in files.exclude setting will also be excluded from the generated tree   |
+| `RepoTree.respectGitignore`                | RepoTree: Respect .gitignore                 | `false`       | When enabled, files and folders listed in the .gitignore file will be excluded from the generated tree                               |
+| `RepoTree.addComments`                     | RepoTree: Add Comments                       | `false`       | When enabled, comments will be added to the right of each file/folder in the generated tree                                          |
+| `RepoTree.commentSymbol`                   | RepoTree: Comment Symbol                     | `//`          | Symbol to use for comments in the generated tree                                                                                     |
+| `RepoTree.commentDistance`                 | RepoTree: Comment Distance                   | `4`           | The minimum distance between the file/folder name and the comment                                                                    |
+| `RepoTree.treeDistance`                    | RepoTree: Tree Distance                      | `1`           | Controls the spacing between tree branches. Higher values make the tree look more spread out, lower values make it more consolidated |
 
 \*Default exclude patterns include common files and directories like `.git`, `node_modules`, `__pycache__`, `.ruff_cache`, `.pytest_cache`, `dist`, `build`, etc.
 
@@ -86,6 +87,7 @@ RepoTree supports excluding files and folders from the generated tree:
    - Uncheck the box to ignore VSCode's built-in exclusion settings
 
 2. **Using `.gitignore` files:**
+
    - The extension can also respect `.gitignore` files
    - You can toggle this behavior in Settings by searching for `RepoTree: Respect .gitignore`
    - Uncheck the box to ignore `.gitignore` files

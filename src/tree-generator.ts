@@ -21,8 +21,12 @@ function calculateMaxLineLength(targetPath: string, depth: number, rootPath: str
 		return maxLength;
 	}
 
-	// Calculate the base indentation length: 2 chars per depth level (pipe + space) + 2 for the branch symbol
-	const indentLength = depth * 2 + 2;
+	const config = vscode.workspace.getConfiguration();
+	const treeDistance = Math.max(1, config.get('RepoTree.treeDistance', 1));
+
+	// Calculate the base indentation length considering tree distance
+	// Each depth level: '┃' + spacing, plus the branch symbol (┣ or ┗)
+	const indentLength = depth * (1 + treeDistance) + (1 + treeDistance);
 
 	// Read directory entries
 	const entries = fs.readdirSync(targetPath);
@@ -85,6 +89,7 @@ export function generateTree(targetPath: string, depth: number, rootPath: string
 	const addComments = config.get('RepoTree.addComments', false);
 	const commentSymbol = config.get('RepoTree.commentSymbol', '//');
 	const commentDistance = Math.max(4, config.get('RepoTree.commentDistance', 4));
+	const treeDistance = Math.max(1, config.get('RepoTree.treeDistance', 1));
 
 	// Format string for tree text with proper indentation
 	const formatLine = (depth: number, pipe: string, name: string, isDir: boolean): string => {
@@ -92,12 +97,14 @@ export function generateTree(targetPath: string, depth: number, rootPath: string
 			? '<span class="t-icon" name="icons">📂</span>' + name
 			: '<span class="t-icon" name="icons">📄</span>' + name;
 
-		const linePrefix = ' ' + Array(depth + 1).join('┃ ') + pipe;
+		// Apply tree distance setting to control branch spacing
+		const pipeSpacing = ' '.repeat(treeDistance);
+		const linePrefix = pipeSpacing + Array(depth + 1).join('┃' + pipeSpacing) + pipe;
 		const baseLine = linePrefix + nameWithIcon;
 
 		if (addComments) {
 			// Calculate the current line length without HTML tags
-			const cleanPrefix = ' ' + '┃ '.repeat(depth) + pipe;
+			const cleanPrefix = pipeSpacing + ('┃' + pipeSpacing).repeat(depth) + pipe;
 			const currentLineLength = cleanPrefix.length + name.length;
 
 			// Calculate padding based on the max line length plus the comment distance
