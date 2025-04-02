@@ -1,13 +1,13 @@
 # Change Log of Release Notes
 
-## 0.1.0 (2025-03-31)
+## 0.1.0 (2025-04-02)
 
 ### Added
 
 - Added custom exclude patterns from gitignore file
 - Added comment support for generated tree
 - Added button to appending generated tree to readme file
-
+- Added tree spacing setting
 ### Changed
 
 - None
