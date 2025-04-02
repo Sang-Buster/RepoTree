@@ -25,6 +25,7 @@
 - Respect VS Code's built-in exclude settings
 - Comprehensive default exclusion patterns
 - Adjustable comment spacing for readability
+- Customizable tree branch spacing for better visualization
 
 ### Extension Settings
 
@@ -68,6 +69,7 @@
 3. Select `RepoTree: Generate to Tree` from the context menu
 4. A new tab will open with the tree visualization
 5. (Optional) Click the `icon off/on` button to toggle file icons
+6. (Optional) Adjust the tree spacing in settings with `RepoTree: Tree Distance` to control how spread out the tree appears
 
 <div align="center">
    <h2>🔍 Excluding Files and Folders</h2>
